@@ -53,7 +53,7 @@ public class Stabilizer implements Runnable {
 			
 			if (manager.isNaMargemLeituraAnterior()) {
 				if (manager.podeNotificarPesagem()) {
-					processarPesagem();
+					processarPesagem(Type.PESAGEM);
 				}
 			} else {
 				manager.clearCount();
@@ -75,8 +75,8 @@ public class Stabilizer implements Runnable {
 		}			
 	}
 	
-	private void processarPesagem(){
-		Sender sender = new Sender(manager.getUuid(), Type.PESAGEM, manager.getAverageWeight(), Propriedades.getUrlPesar());
+	private void processarPesagem(Type type){
+		Sender sender = new Sender(manager.getUuid(), type, manager.getAverageWeight(), Propriedades.getUrlPesar());
 		if(notifier.notificar(sender)){
 			manager.setReading(true);
 			frame.addMensagem("MENSAGEM PESAGEM DE " + manager.getAverageWeight()  + "KG ENVIADA");	
@@ -84,7 +84,7 @@ public class Stabilizer implements Runnable {
 		}
 	}
 
-	public void processarFimPesagem(){
+	private void processarFimPesagem(){
 		Sender sender = new Sender(manager.getUuid(), Type.SAIDA, Propriedades.getUrlLiberar());
 		if(notifier.notificar(sender)){
 			manager.newReading();						
@@ -99,16 +99,14 @@ public class Stabilizer implements Runnable {
 		if (JOptionPane.showConfirmDialog(frame,"OPERAÇÃO CRÍTICA NO SISTEMA\n"
 				+ "Toda esta operação está sendo gravada.\nProsseguir com a liberação?",
 				"AVISO", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == JOptionPane.OK_OPTION){
-			//FIXME PROCESSAR REPESAGEM AQUI
-			System.out.println("Repesando");
-			System.out.println(Propriedades.config());
-			//Sender sender = new Sender(manager.getUuid(), Type.REPESAGEM, manager.getAverageWeight(), Propriedades.getUrlLiberacao());
-			/*if(processarFimPesagem()){
-				notifier.registrar("REPESAGEM UTILIZADA");				
-			}else{
-				JOptionPane.showMessageDialog(frame, "Não foi possível completar a solicitação!", "ERRO", JOptionPane.ERROR_MESSAGE);
-			}*/
-		}
+			
+			if(!manager.podeRepesar()){
+				JOptionPane.showMessageDialog(frame, "Situação atual não permite repesagem", "ERRO", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			processarPesagem(Type.REPESAGEM);
+		} 
 		frame.setAlwaysOnTop(true);		
 	}
 

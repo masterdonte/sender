@@ -12,7 +12,7 @@ import br.gov.ma.emap.sender.modelo.Sender;
 
 public class SenderService {
 	private final static Logger logger = Logger.getLogger(SenderService.class);
-	private static final ExecutorService executor = Executors.newFixedThreadPool(6);
+	private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 	public static Configuracao getConfig() {
 		return SenderDao.getInstancia().getConfiguracao();

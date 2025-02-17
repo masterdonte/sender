@@ -9,25 +9,36 @@ import br.gov.ma.emap.sender.service.SenderService;
 import br.gov.ma.emap.sender.service.Stabilizer; 
 
 public class Principal {
-	private final static File lockFile = new File("C:/BALANÇA/sender.lock");
+	
+	private final static File lockFile = new File("C:/ProgramData/Balanca/sender.lock");
 	private static boolean shutdownHookExecuted = false;
 	
 	public static void main(String[] args) {
-		if (lockFile.exists()) {
-			JOptionPane.showMessageDialog(null, "O Sender já está em execução.\nFeche a aplicação que já está rodando", "ERRO", JOptionPane.ERROR_MESSAGE);
-			shutdown(0);
-		}
+		
 		try {
+			
+			File diretorio = lockFile.getParentFile();
+
+	        if (diretorio != null && !diretorio.exists()) {
+	            if (!diretorio.mkdirs())
+	                throw new IOException();
+	        }
+	        
+			if (lockFile.exists()) {
+				JOptionPane.showMessageDialog(null, "O Sender já está em execução.\nFeche a aplicação que já está rodando", "ERRO", JOptionPane.ERROR_MESSAGE);
+				shutdown(0);
+			}
+			
 			lockFile.createNewFile();
 			new Thread(new Stabilizer()).start(); //new Thread(() -> new Stabilizer().run()).start();
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao criar arquivo de trava.", "ERRO", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Não foi possível criar os arquivos necessários.", "ERRO", JOptionPane.ERROR_MESSAGE);
 			shutdown(1);
 		}
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {//Metodo a se chamado com saidas abruptas ou finalizacao de processo
 			shutdownHookExecuted = true;
-			shutdown(0);//Metodo que será executado quando houver algum erro- uma saída abrupta por exemplo
+			shutdown(0);
 		}));
 	}
 	

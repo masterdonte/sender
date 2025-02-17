@@ -32,6 +32,7 @@ public class Notificador {
 					throw new Exception(responseBody);				    
 				}  
 			}
+			System.out.println("Enviado para o integrador");
 		} catch (Exception e) {
 			sender.setMessage(e.getMessage());
 			resultado = false;

@@ -78,8 +78,9 @@ public class Sender {
 
 	@Override
 	public String toString() {
-		return "Sender [uuid=" + uuid + ", device=" + device + ", type=" + type + ", occurr=" + occurrence
-				+ ", user=" + user + ", weight=" + weight + ", message=" + message + ", url=" + url + "]";
+		//SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM-yyyy HH:mi:ss.SSS");
+		return "Sender [uuid=" + uuid + ", type=" + type + ", device=" + device + ", weight=" + weight
+				+ ", message=" + message + ", url=" + url + ", user=" + user +"]";
 	}
 
 }

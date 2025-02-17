@@ -76,7 +76,11 @@ public class Gerenciador {
 	public boolean podeNotificarPesagem(){
 		increaseCount();
 		return count > TIMES && !isReading() && !isZeroed() && inProcess;
-	}		
+	}	
+	
+	public boolean podeRepesar(){
+		return count > TIMES && isReading() && isNaMargemLeituraAnterior() && inProcess;
+	}	
 	
 	public void clearCount() {
 		count = 0;
